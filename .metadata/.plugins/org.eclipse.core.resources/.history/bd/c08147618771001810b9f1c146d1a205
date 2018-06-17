@@ -1,0 +1,121 @@
+package compactador;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Arrays;
+
+import codigo.*;
+import listaDesordenada.*;
+import meuRandomAccessFile.MeuRandomAccessFile;
+import no.*;
+
+public class Compactador
+{
+	public class FreqSimb
+	{
+	   protected int freq;
+	   protected int simb;
+
+		public FreqSimb(int f)
+	   	{
+	      	this(f, -1);
+	   	}
+
+	   	public FreqSimb(int f, int s)
+	   	{
+	    	this.freq = f;
+	      	this.simb = s;
+	   	}
+
+	   	public int getSimb()
+	   	{
+	    	return this.simb;
+	   	}
+
+	   	public int getFreq()
+	   	{
+	    	return this.freq;
+	   	}
+	   	
+	   	public String toString()
+	   	{
+	   		return "Frequencia: " + this.getFreq() + " Simbolo: " + this.getSimb();
+	   	}
+	}
+
+	protected Codigo[] codigos;
+	protected RandomAccessFile arq;
+
+	public Compactador()
+	{}
+
+	protected void salvarVetArq(byte[] nvVet, String nomeArquivo)
+	{
+		try 
+		{
+			this.arq = new RandomAccessFile(nomeArquivo, "rw");
+			
+			this.arq.write(nvVet);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		try 
+		{
+			this.arq.close();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	protected void salvarVetArq(byte[][] nvVet, String nomeArquivo)
+	{
+		byte[] ret;
+		int qtd = 0;
+		
+		
+		for (int i = 0; i < nvVet.length; i++)
+			qtd += nvVet[i].length;
+		
+		ret = new byte[qtd];
+		
+		int atual = 0;
+		
+		for (int i = 0; i < qtd; i++)
+			for(int j = 0; j < nvVet[i].length; j++)
+			{
+				ret[atual] = nvVet[i][j];
+				atual++;
+			}
+				
+		salvarVetArq(this.ajustarTamVet(ret, qtd), nomeArquivo);
+	}
+
+	public void compactar(String nomeArquivo) throws Exception
+	{	
+		if(!new File(nomeArquivo).exists())
+			throw new FileNotFoundException("Arquivo inexistente!");
+		
+		int[] vetFreq = montaVetFreq(nomeArquivo);		
+		No[]  vetNo
+	}
+	
+	protected int[] montaVetFreq(String nomeArquivo)
+	{
+		int[] ret = new int[256];
+		
+		try
+		{
+			MeuRandomAccessFile leitor = new MeuRandomAccessFile(nomeArquivo, "r");
+			for(int i = 0; i<leitor.length(); i++)
+				ret[leitor.read()]++;
+		}catch(Exception e)
+		{}
+		
+		return ret;
+	}
+}

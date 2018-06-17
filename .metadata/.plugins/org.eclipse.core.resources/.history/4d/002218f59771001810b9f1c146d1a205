@@ -1,0 +1,103 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import compactador.*;
+
+public class Programa 
+{	
+	public static void main(String[] args)
+	{
+		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
+		Compactador c = new Compactador();
+		
+		System.out.println("Compactar(C) ou Descompactar(D)?");
+		
+		for(;;)
+		{
+			try 
+			{
+				String resp = teclado.readLine();
+			
+				try
+				{
+				if (resp.trim().toLowerCase().equals("c"))
+					O:for(;;)
+					{
+						System.out.println("Digite o nome do arquivo:");
+						try 
+						{
+							String nomeArq = teclado.readLine();
+							File f = new File(nomeArq);
+							if (!f.exists())
+								throw new Exception ("vai");
+								
+								c.compactar(nomeArq);
+								
+						} 
+						catch (Exception e) 
+						{
+							e.printStackTrace();
+							System.out.println("Arquivo não existe");
+						}
+					}
+				else
+					if (resp.trim().toLowerCase().equals("d"))
+						for(;;)
+						{
+							System.out.println("Digite o nome do arquivo:");
+							try 
+							{
+								/*String nomeArq = teclado.readLine();
+								File f = new File(nomeArq);
+								if (!f.exists())
+									throw new Exception("vai");
+								
+								c.descompactar(nomeArq);
+								*/
+							} 
+							catch (Exception e) 
+							{
+								e.printStackTrace();
+								System.out.println("Arquivo não existe");
+							}
+							try
+							{
+								//c.descompactar("f:/r.MrSaturn");
+							}
+							catch (Exception e) 
+							{
+								e.printStackTrace();
+								System.out.println("Arquivo não existe");
+							}
+						}
+					else
+						throw new Exception("digitou errado");
+				}
+				catch (Exception erro)
+				{
+					System.out.println("Digite c ou d");
+				}
+				
+				System.out.println("Deseja continuar?(S/N)");
+				try
+				{
+				if (teclado.readLine().trim().toLowerCase() == "s")
+					break;
+				else
+					return;
+				}
+				catch (Exception e)
+				{
+					break;
+				}
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		}
+		
+		
+	}
+}
