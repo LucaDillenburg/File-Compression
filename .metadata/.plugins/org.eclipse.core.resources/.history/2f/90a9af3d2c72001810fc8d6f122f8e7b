@@ -303,17 +303,18 @@ public class CompactadorArquivo
 			
 			if(this.raiz.getEsq() == null && this.raiz.getDir() == null)
 			{
+				No atual = this.raiz;
 				for (long iBytes = leitor.getFilePointer(); iBytes < leitor.length(); iBytes++)
 				{
 					int qtdBits = 8;
 					if(iBytes == leitor.length()-1)
-						qtdBits -= this.qtdLixo;
+						qtdBits -= this.qtdLixo + 1;
 					
 					for(int i = 0; i < qtdBits; i++)
 					{
-						escritor.write(this.raiz.getInfo().getSimb());
+						escritor.write(((FreqSimb)(atual.getInfo())).getSimb());
 					}
-				}
+				}		
 			}else
 			{
 				//escrever codigos antigos do arquivo
@@ -362,7 +363,7 @@ public class CompactadorArquivo
 		}catch(Exception e)
 		{
 			e.printStackTrace();
-			return "";
+			return e.getMessage()+"";
 		}
 	}
 	

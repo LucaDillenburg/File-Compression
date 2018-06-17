@@ -362,7 +362,7 @@ public class CompactadorArquivo
 		}catch(Exception e)
 		{
 			e.printStackTrace();
-			return "";
+			return e.getMessage()+"";
 		}
 	}
 	
