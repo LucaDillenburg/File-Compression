@@ -1,0 +1,89 @@
+package compactador;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Arrays;
+
+import compactadorArquivo.*;
+
+public class Compactador
+{
+	//compactar
+	public static void compactar(File arquivo) throws Exception
+	{
+		if (arquivo == null)
+			throw new FileNotFoundException("Arquivo nulo");
+		
+		if(!arquivo.isDirectory())
+		{
+			CompactadorArquivo compactadorArq = new CompactadorArquivo();
+			compactadorArq.compactar(arquivo);
+		}else
+		{
+			String diretorio = arquivo.getCanonicalPath().substring(0, 
+					arquivo.getCanonicalPath().lastIndexOf('.')) + " - Compactado";
+			String extensao = arquivo.getName().substring(
+					arquivo.getName().lastIndexOf(".")+1);
+			
+			String nomeArq = null;
+			int n = 1;
+			while (arquivo.exists()) {
+				//se jah existe esse arquivo criar outro com " (1)" na frente
+				nomeArq = diretorio + " (" + n + ")." + extensao;
+				n++;
+			}
+			
+			Compactador.compactarAux(arquivo, nomeArq);
+		}
+	}
+	
+	public static void compactar(String nomeArquivo) throws Exception
+	{
+		if(!new File(nomeArquivo).exists())
+			throw new FileNotFoundException("Arquivo inexistente!");
+
+		Compactador.compactar(new File(nomeArquivo));
+	}
+	
+	protected static void compactarAux(File arquivo, String nomeArq)
+	{
+		if(!arquivo.isDirectory())
+		{
+			CompactadorArquivo compactadorArq = new CompactadorArquivo();
+
+			try
+			{
+				compactadorArq.compactar(arquivo, nomeArq);
+			}catch (Exception e) {e.printStackTrace();}
+		}else
+		{
+			for (final File arq : arquivo.listFiles())
+			{
+				try {
+					Compactador.compactarAux(arq, arquivo.getCanonicalPath());
+				} catch (IOException e) {e.printStackTrace();}
+		    }
+		}
+	}
+	
+	
+	//descompactar
+	public static String descompactar(File arquivo) throws Exception
+	{
+		if (arquivo == null)
+			throw new FileNotFoundException("Arquivo nulo");
+		
+		CompactadorArquivo descompactador = new CompactadorArquivo();
+		return descompactador.descompactar(arquivo);
+	}
+	
+	public static String descompactar(String nomeArquivo) throws Exception
+	{
+		if(!new File(nomeArquivo).exists())
+			throw new FileNotFoundException("Arquivo inexistente!");
+
+		return Compactador.descompactar(new File(nomeArquivo));
+	}
+}

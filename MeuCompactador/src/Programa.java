@@ -10,7 +10,6 @@ public class Programa
 	public static void main(String[] args)
 	{
 		BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
-		Compactador compactador = new Compactador();
 		
 		for(;;)
 		{
@@ -36,10 +35,10 @@ public class Programa
 						nomeArquivo = teclado.readLine();
 					}catch(Exception e) {}
 					
-					String nvNome = compactador.compactar(nomeArquivo);
+					Compactador.compactar(nomeArquivo);
 					
 					System.out.println();
-					System.out.println("Arquivo compactado com sucesso! Nome do arquivo compactado: " + nvNome);
+					System.out.println("Arquivo compactado com sucesso!");
 					System.out.println();
 				}else
 				if(resp.equals("d") || resp.equals("D"))
@@ -51,10 +50,10 @@ public class Programa
 						nomeArquivo = teclado.readLine();
 					}catch(Exception e) {}
 					
-					String nvNome = compactador.descompactar(nomeArquivo);
+					Compactador.descompactar(nomeArquivo);
 					
 					System.out.println();
-					System.out.println("Arquivo descompactado com sucesso! Nome do arquivo descompactado: " + nvNome);
+					System.out.println("Arquivo descompactado com sucesso!");
 					System.out.println();
 				}else
 				{
@@ -62,7 +61,7 @@ public class Programa
 				}
 			}catch(Exception e)
 			{
-				System.err.println(e.getMessage());
+				System.out.println(e.getMessage());
 			}		
 		}
 	}

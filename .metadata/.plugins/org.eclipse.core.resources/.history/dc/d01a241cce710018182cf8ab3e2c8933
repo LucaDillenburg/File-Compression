@@ -1,0 +1,49 @@
+package compactador;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.Arrays;
+
+import compactadorArquivo.*;
+
+public class Compactador
+{
+	//compactar
+	public static String compactar(File arquivo) throws Exception
+	{
+		if (arquivo == null)
+			throw new FileNotFoundException("Arquivo nulo");
+		
+		CompactadorArquivo compactador = new CompactadorArquivo();
+		return compactador.compactar(arquivo);
+	}
+	
+	public static String compactar(String nomeArquivo) throws Exception
+	{
+		if(!new File(nomeArquivo).exists())
+			throw new FileNotFoundException("Arquivo inexistente!");
+
+		return Compactador.compactar(new File(nomeArquivo));
+	}
+	
+	
+	//descompactar
+	public static String descompactar(File arquivo) throws Exception
+	{
+		if (arquivo == null)
+			throw new FileNotFoundException("Arquivo nulo");
+		
+		CompactadorArquivo descompactador = new CompactadorArquivo();
+		return descompactador.descompactar(arquivo);
+	}
+	
+	public static String descompactar(String nomeArquivo) throws Exception
+	{
+		if(!new File(nomeArquivo).exists())
+			throw new FileNotFoundException("Arquivo inexistente!");
+
+		return Compactador.descompactar(new File(nomeArquivo));
+	}
+}
