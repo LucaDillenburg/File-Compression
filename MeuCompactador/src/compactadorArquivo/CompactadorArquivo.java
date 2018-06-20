@@ -2,12 +2,7 @@ package compactadorArquivo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.util.Arrays;
-
 import codigo.*;
-import listaDesordenada.*;
 import meuRandomAccessFile.MeuRandomAccessFile;
 import no.*;
 
@@ -45,7 +40,7 @@ public class CompactadorArquivo
 	   	}
 	}
 
-	public static final String EXTENSAO_MEU_COMPACTADOR = "paodebatata";
+	public static final String EXTENSAO_MEU_COMPACTADOR = "sup";
 	
 	protected Codigo[] codigos;
 	protected File arq;
@@ -133,16 +128,15 @@ public class CompactadorArquivo
 	{
 		try
 		{
-			String extensao = this.getFileExtension();
+			String extensao = CompactadorArquivo.getFileExtension(this.arq);
 			
 			File novoArquivo = null;
 			if(this.nomeFinal == null)
 				novoArquivo = this.criarNovoArquivo(this.getFileDirectory(), EXTENSAO_MEU_COMPACTADOR);
 			else
-				novoArquivo = this.criarNovoArquivo(this.nomeFinal, EXTENSAO_MEU_COMPACTADOR);
+				novoArquivo = new File(this.nomeFinal + "." + EXTENSAO_MEU_COMPACTADOR);
 			
 			MeuRandomAccessFile escritor = new MeuRandomAccessFile(novoArquivo, "rw");
-			MeuRandomAccessFile leitor = new MeuRandomAccessFile(this.arq, "r");
 			
 			//colocar CABECALHO: length extensao, extensao, posLixo, qtd posicoes usadas vetor No,
 			 //vetor de No
@@ -152,40 +146,45 @@ public class CompactadorArquivo
 			for (int i = 0; i < extensao.length(); i++)
 				escritor.write((int)extensao.charAt(i));
 			
-			//coloca 0 em qtdLixo e coloca um ponteiro para voltar depois
-			 //(pois soh depois de escrever o arquivo inteiro vai saber quantos bits sobraram)
-			long posLixo = escritor.getFilePointer();
-			escritor.write(0);
-			
-			//escrever numero de posicoes do vetor
-			escritor.writeInt(this.qtdSimb);
-			//escrever vetor em si
-			for (int i = 0; i < this.vetFreq.length; i++)
-				if (this.vetFreq[i] > 0)
-				{
-					escritor.write(i);
-					escritor.writeInt(this.vetFreq[i]);
-				}
-			
-			//escrever novos codigos do arquivo
-			for (int i = 0; i < leitor.length(); i++)
+			if(this.raiz != null)
 			{
-				int ind = leitor.read();
-				escritor.escreverCodigo(this.codigos[ind]);
+				MeuRandomAccessFile leitor = new MeuRandomAccessFile(this.arq, "r");
+				
+				//coloca 0 em qtdLixo e coloca um ponteiro para voltar depois
+				 //(pois soh depois de escrever o arquivo inteiro vai saber quantos bits sobraram)
+				long posLixo = escritor.getFilePointer();
+				escritor.write(0);
+				
+				//escrever numero de posicoes do vetor
+				escritor.writeInt(this.qtdSimb);
+				//escrever vetor em si
+				for (int i = 0; i < this.vetFreq.length; i++)
+					if (this.vetFreq[i] > 0)
+					{
+						escritor.write(i);
+						escritor.writeInt(this.vetFreq[i]);
+					}
+				
+				//escrever novos codigos do arquivo
+				for (int i = 0; i < leitor.length(); i++)
+				{
+					int ind = leitor.read();
+					escritor.escreverCodigo(this.codigos[ind]);
+				}
+				
+				//preencher lixo
+				int qtdLixo = escritor.getQtdLixo();
+				escritor.preencherLixo();
+				
+				//volta no lugar onde ficaria o qtdLixo e escreve
+				escritor.seek(posLixo);
+				escritor.write(qtdLixo);
+				
+				leitor.close();
 			}
-			
-			//preencher lixo
-			int qtdLixo = escritor.getQtdLixo();
-			escritor.preencherLixo();
-			
-			//volta no lugar onde ficaria o qtdLixo e escreve
-			escritor.seek(posLixo);
-			escritor.write(qtdLixo);
-			
 			escritor.close();
-			leitor.close();
 			
-			return novoArquivo.getName();
+			return novoArquivo.getAbsolutePath();
 		}catch(Exception e)
 		{
 			return "";
@@ -201,7 +200,7 @@ public class CompactadorArquivo
 		
 		this.resetarInformacoes();
 		this.arq = arquivo;
-		if(!EXTENSAO_MEU_COMPACTADOR.equals(this.getFileExtension()))
+		if(!EXTENSAO_MEU_COMPACTADOR.equals(CompactadorArquivo.getFileExtension(this.arq)))
 			throw new Exception("Esse arquivo nao foi compactado por esse Compactador!");
 		this.nomeFinal = nome;
 		
@@ -215,7 +214,7 @@ public class CompactadorArquivo
 		
 		this.resetarInformacoes();
 		this.arq = arquivo;
-		if(!EXTENSAO_MEU_COMPACTADOR.equals(this.getFileExtension()))
+		if(!EXTENSAO_MEU_COMPACTADOR.equals(CompactadorArquivo.getFileExtension(this.arq)))
 			throw new Exception("Esse arquivo nao foi compactado por esse Compactador!");
 			
 		return this.descompactar();
@@ -272,17 +271,21 @@ public class CompactadorArquivo
 			//lixo
 			this.qtdLixo = leitor.read();
 			
-			//vetor int (freq)
-			this.qtdSimb = leitor.readInt();
-			
-			this.vetFreq = new int[256];		
-			for(int i = 0; i < this.qtdSimb; i++)
+			if(this.qtdLixo >= 0)
 			{
-				int indice = leitor.read();
-				int freq = leitor.readInt();
+				//vetor int (freq)
+				this.qtdSimb = leitor.readInt();
 				
-				this.vetFreq[indice] = freq;
-			}
+				this.vetFreq = new int[256];		
+				for(int i = 0; i < this.qtdSimb; i++)
+				{
+					int indice = leitor.read();
+					int freq = leitor.readInt();
+					
+					this.vetFreq[indice] = freq;
+				}
+			}else
+				this.vetFreq = new int[256];
 		}catch(Exception e)
 		{
 			System.err.println(e.getMessage() + e.getStackTrace());
@@ -297,68 +300,69 @@ public class CompactadorArquivo
 			if(this.nomeFinal == null)
 				novoArquivo = this.criarNovoArquivo(this.getFileDirectory(), this.extensaoAntiga);
 			else
-				novoArquivo = this.criarNovoArquivo(this.nomeFinal, this.extensaoAntiga);
+				novoArquivo = new File(this.nomeFinal + "." + this.extensaoAntiga);
 			
 			MeuRandomAccessFile escritor = new MeuRandomAccessFile(novoArquivo, "rw");
-			
-			if(this.raiz.getEsq() == null && this.raiz.getDir() == null)
+			if(raiz != null)
 			{
-				for (long iBytes = leitor.getFilePointer(); iBytes < leitor.length(); iBytes++)
+				if(this.raiz.getEsq() == null && this.raiz.getDir() == null)
 				{
-					int qtdBits = 8;
-					if(iBytes == leitor.length()-1)
-						qtdBits -= this.qtdLixo;
-					
-					for(int i = 0; i < qtdBits; i++)
+					for (long iBytes = leitor.getFilePointer(); iBytes < leitor.length(); iBytes++)
 					{
-						escritor.write(this.raiz.getInfo().getSimb());
-					}
-				}
-			}else
-			{
-				//escrever codigos antigos do arquivo
-				No<FreqSimb> atual = this.raiz;
-				for (long iBytes = leitor.getFilePointer(); iBytes < leitor.length(); iBytes++)
-				{				
-					int byteAtual = leitor.read();
-					
-					int qtdBits = 8;
-					if(iBytes == leitor.length()-1)
-						qtdBits -= this.qtdLixo;
-					
-					for(int i = 0; i < qtdBits; i++)
-					{
-						int bit = getBitFromByte(byteAtual, 7-i);
+						int qtdBits = 8;
+						if(iBytes == leitor.length()-1)
+							qtdBits -= this.qtdLixo;
 						
-						//se acabou a arvore
-						if((bit == 1 && atual.getDir()==null) || (bit == 0 && atual.getEsq()==null))
+						for(int i = 0; i < qtdBits; i++)
 						{
-							escritor.write(((FreqSimb)(atual.getInfo())).getSimb());
-							atual = this.raiz;
+							escritor.write(this.raiz.getInfo().getSimb());
 						}
+					}
+				}else
+				{
+					//escrever codigos antigos do arquivo
+					No<FreqSimb> atual = this.raiz;
+					for (long iBytes = leitor.getFilePointer(); iBytes < leitor.length(); iBytes++)
+					{				
+						int byteAtual = leitor.read();
 						
-						if(bit == 0)
-							atual = atual.getEsq();
-						else
-							atual = atual.getDir();
-					
-						if(iBytes == leitor.length() && i == qtdBits-1)
+						int qtdBits = 8;
+						if(iBytes == leitor.length()-1)
+							qtdBits -= this.qtdLixo;
+						
+						for(int i = 0; i < qtdBits; i++)
+						{
+							int bit = getBitFromByte(byteAtual, 7-i);
+							
 							//se acabou a arvore
 							if((bit == 1 && atual.getDir()==null) || (bit == 0 && atual.getEsq()==null))
 							{
 								escritor.write(((FreqSimb)(atual.getInfo())).getSimb());
 								atual = this.raiz;
 							}
+							
+							if(bit == 0)
+								atual = atual.getEsq();
+							else
+								atual = atual.getDir();
+						
+							if(iBytes == leitor.length() && i == qtdBits-1)
+								//se acabou a arvore
+								if((bit == 1 && atual.getDir()==null) || (bit == 0 && atual.getEsq()==null))
+								{
+									escritor.write(((FreqSimb)(atual.getInfo())).getSimb());
+									atual = this.raiz;
+								}
+						}
 					}
+					
+					escritor.write(((FreqSimb)(atual.getInfo())).getSimb());
 				}
-				
-				escritor.write(((FreqSimb)(atual.getInfo())).getSimb());
 			}
-			
 			escritor.close();
 			leitor.close();
 			
-			return novoArquivo.getName();
+			return novoArquivo.getAbsolutePath();
 		}catch(Exception e)
 		{
 			e.printStackTrace();
@@ -366,16 +370,22 @@ public class CompactadorArquivo
 		}
 	}
 	
+	
 	//metodos gerais
 	protected void colocarNvsCodigosNaArv()
 	{
 		this.codigos = new Codigo[256];
+		
 		for(int i=0; i < this.codigos.length; i++)
 			this.codigos[i] = null;
-		if(this.raiz.getEsq()==null && this.raiz.getDir()==null && this.raiz.getInfo().getSimb() >= 0)
-			this.codigos[this.raiz.getInfo().getSimb()] = new Codigo("0");
-		else
-			this.colocarNvsCodigosNaArv(this.raiz, new Codigo());
+		
+		if(this.raiz != null)
+		{
+			if(this.raiz.getEsq()==null && this.raiz.getDir()==null && this.raiz.getInfo().getSimb() >= 0)
+				this.codigos[this.raiz.getInfo().getSimb()] = new Codigo("0");
+			else
+				this.colocarNvsCodigosNaArv(this.raiz, new Codigo());
+		}
 	}
 	
 	protected void colocarNvsCodigosNaArv(No<FreqSimb> r, Codigo c)
@@ -408,7 +418,7 @@ public class CompactadorArquivo
 			{
 					try
 					{
-						nos[this.qtdSimb] = new No(new FreqSimb(this.vetFreq[i], i));
+						nos[this.qtdSimb] = new No<FreqSimb>(new FreqSimb(this.vetFreq[i], i));
 					} catch (Exception e)
 					{
 						e.printStackTrace();
@@ -485,8 +495,10 @@ public class CompactadorArquivo
 		//criar o arquivo compactado soh com a extensao
 		File arquivo = new File(diretorio + "." + extensao);
 		
+		//para nao sobreescrever nenhum arquivo
 		int n = 1;
-		while (arquivo.exists()) {
+		while (arquivo.exists())
+		{
 			//se jah existe esse arquivo criar outro com " (1)" na frente
 			arquivo = new File(diretorio + " (" + n + ")." + extensao);
 			n++;
@@ -495,16 +507,16 @@ public class CompactadorArquivo
 		return arquivo;
 	}
 	
-	private String getFileExtension()
-	{
+	protected static String getFileExtension(File file) throws Exception
+	{		
         try
         {
-        	String nomeArq = this.arq.getName();
+        	String nomeArq = file.getName();
             return nomeArq.substring(nomeArq.lastIndexOf(".")+1);
         } 
         catch (Exception e) 
         {
-        	return "";
+        	throw new Exception("Error: coudn't find file extension!");
         }
     }
 
@@ -517,6 +529,17 @@ public class CompactadorArquivo
 		}
 		catch (Exception e) {
 			return "";
+		}
+	}
+
+	public static boolean estahCompactado(File arquivo)
+	{
+		try
+		{
+			return (CompactadorArquivo.EXTENSAO_MEU_COMPACTADOR.equals(CompactadorArquivo.getFileExtension(arquivo)));
+		}catch(Exception e)
+		{
+			return false;
 		}
 	}
 }
