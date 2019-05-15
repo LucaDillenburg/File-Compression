@@ -1,5 +1,5 @@
 # Compactador e descompactador deArquivos
-Compactador de arquivos usando Árvores
+Compactador de arquivos usando Árvores (em Java)
 
 ## Features
  - compacta e descompacta arquivos
