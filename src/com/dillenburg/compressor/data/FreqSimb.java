@@ -1,4 +1,4 @@
-package com.dillenburg.compressor.fileCompressor;
+package com.dillenburg.compressor.data;
 
 public class FreqSimb
 {

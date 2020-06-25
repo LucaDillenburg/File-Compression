@@ -1,56 +1,46 @@
-package com.dillenburg.compressor.fileCompressor;
+package com.dillenburg.compressor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import com.dillenburg.auxiliar.FileUtils;
 import com.dillenburg.auxiliar.MyRandomAccessFile;
-import com.dillenburg.compressor.CompressionUtils;
 
-public class FileCompressor extends FileDeCompressorBase
+public class FileCompressor extends BaseCompression
 {
-	public String compress(File file, String newName) throws Exception
-	{
-		if (file == null)
-			throw new FileNotFoundException("Null file");
-		
-		this.resetInfo();
+	public FileCompressor(File file) throws FileNotFoundException {
+		if (file == null || !file.exists())
+			throw new FileNotFoundException("Invalid file");
 		this.file = file;
-		this.newName = newName;
-		
-		return this.compress();
 	}
 	
-	public String compress(File file) throws Exception
-	{
-		if (file == null)
-			throw new FileNotFoundException("Null file");
-		
-		this.resetInfo();
-		this.file = file;
-		
-		return this.compress();
-	}
-	
-	protected String compress()
+	public void compress()
 	{
 		this.buildFrequencyArray();
 		this.root = buildTree();
 		this.insertCodesInTree();
-		return this.writeFile();
 	}
-	
-	protected String writeFile()
+
+	public String writeToFile()
+	{
+		String pathWithoutExtension = FileUtils.getPathWithoutExtension(this.file.getAbsolutePath());
+		String pathNoOverwrite = FileUtils.getPathFileDoesntExist(pathWithoutExtension, CompressionUtils.COMPRESSED_FORMAT);
+		auxWriteToFile(pathNoOverwrite);
+		return pathNoOverwrite;
+	}
+
+	public void writeToFile(String pathWithoutExtension) {
+		auxWriteToFile(pathWithoutExtension + "." + CompressionUtils.COMPRESSED_FORMAT);
+	}
+
+	protected void auxWriteToFile(String path)
 	{
 		try
 		{
-			String fileExtension = FileCompressor.getFileExtension(this.file);
-			File fileName;
-			if(this.newName == null)
-				fileName = this.createFile(this.getFileDirectory(), CompressionUtils.COMPRESSED_FORMAT);
-			else
-				fileName = new File(this.newName + "." + CompressionUtils.COMPRESSED_FORMAT);
+			String fileExtension = FileUtils.getFileExtension(this.file);
+			File file = new File(path);
 			
-			MyRandomAccessFile writer = new MyRandomAccessFile(fileName, "rw");
+			MyRandomAccessFile writer = new MyRandomAccessFile(file, "rw");
 
 			writer.write(fileExtension.length());
 			for (int i = 0; i < fileExtension.length(); i++)
@@ -87,11 +77,9 @@ public class FileCompressor extends FileDeCompressorBase
 				reader.close();
 			}
 			writer.close();
-			
-			return fileName.getAbsolutePath();
 		}catch(Exception e)
 		{
-			return "";
+			e.printStackTrace();
 		}
 	}
 }

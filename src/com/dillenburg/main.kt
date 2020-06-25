@@ -1,31 +1,38 @@
 package com.dillenburg
 
-import com.dillenburg.compressor.Compressor
-import com.dillenburg.compressor.Decompressor
+import com.dillenburg.compressor.FileCompressor
+import com.dillenburg.compressor.FileDecompressor
 import java.io.File
 
 fun main(args: Array<String>) {
     try {
         println(" ## MENU ## ")
-        println("1. Compress file or folder")
-        println("2. Decompress file or folder")
+        println("1. Compress file")
+        println("2. Decompress file")
 
         print("Which option do you choose? ")
         val option = readLine()
 
-        print("Write the path to the file or directory you want to compress: ")
+        if (option != "1" && option != "2")
+            return
+
+        print("Write the path to the file you want to compress: ")
         val path = readLine()
 
         var newPath: String
-        if (option == "1")
-            newPath = Compressor.compress(File(path))
-        else if (option == "2")
-            newPath = Decompressor.decompress(File(path))
-        else
-            return
+        if (option == "1") {
+            val fileCompressor = FileCompressor(File(path))
+            fileCompressor.compress()
+            newPath = fileCompressor.writeToFile()
+        }
+        else {
+            val fileDecompressor = FileDecompressor(File(path))
+            fileDecompressor.decompress()
+            newPath = fileDecompressor.writeToFile()
+        }
 
-        print("The file/directory was successfully ${if (option=="1") "" else "de"}compressed. The name of the new file/directory is $newPath")
+        print("The file was successfully ${if (option=="1") "" else "de"}compressed. The name of the new file is $newPath")
     } catch (e: Exception) {
-        e.printStackTrace()
+        print("Error: $e")
     }
 }

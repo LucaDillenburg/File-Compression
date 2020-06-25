@@ -1,4 +1,4 @@
-package com.dillenburg.compressor;
+package com.dillenburg.compressor.data;
 
 public class Code
 {

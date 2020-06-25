@@ -1,7 +1,7 @@
 package com.dillenburg.auxiliar;
 
 import java.io.*;
-import com.dillenburg.compressor.Code;
+import com.dillenburg.compressor.data.Code;
 
 public class MyRandomAccessFile extends RandomAccessFile
 {
