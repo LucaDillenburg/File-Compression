@@ -1,9 +1,13 @@
-# Compactador e descompactador deArquivos
-Compactador de arquivos usando Árvores (em Java)
+# File Compressor and Decompressor
+File compressor and decompressor that uses Huffman Compression Algorithm.
 
-## Features
- - compacta e descompacta arquivos
- - compacta e descompacta todos os arquivos de uma pasta e suas subpastas
+## Example
+You can find a "Lorem Ipsum" example and its compressed file in the repository. The ```ls -l``` commands shows as follows:
+```
+-rw-r--r-- 1 dillenburg dillenburg  94K Jun 25 22:44 compressed.yeah
+-rw-r--r-- 1 dillenburg dillenburg 176K Jun 25 22:44 example.txt
+```
+This represents a 46.6% percent compression rate.
 
-## Autor
-Luca Dillenburg
+## Huffman Compression Algorithm
+![Huffman Compression](huffman-compression-algorithm.gif)
