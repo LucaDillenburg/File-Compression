@@ -1,5 +1,7 @@
 # File Compressor and Decompressor
 File compressor and decompressor that uses Huffman Compression Algorithm.
+<br/>
+All the data structures used were developed using only built-in elements.
 
 ## Example
 You can find a "Lorem Ipsum" example and its compressed file in the repository. The ```ls -l``` commands shows as follows:
