@@ -12,6 +12,7 @@ public class FileDecompressor extends BaseCompression
 {
     protected String oldExtension = null;
     protected int amntBitsTrash = -1;
+    protected String decompressedStr = null;
 
     public FileDecompressor(File file) throws FileNotFoundException, Exception {
         if (file == null || !file.exists())
@@ -80,6 +81,8 @@ public class FileDecompressor extends BaseCompression
             File newFile =  new File(path);
 
             MyRandomAccessFile fileReader = new MyRandomAccessFile(this.file, "r");
+            this.getHeaderInfo(fileReader);
+
             MyRandomAccessFile fileWriter = new MyRandomAccessFile(newFile, "rw");
             if(root != null)
             {
