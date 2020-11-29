@@ -27,7 +27,7 @@ typedef struct {
  * qtde_maxima_entradas strings de tamanho máximo TAM_MAX_ENTRADA.
  * A função devolve um ponteiro para o dicionário alocado.
  */
-tDicionario *criaDicionario(short qtdeMaximaEntradas);
+tDicionario *criaDicionario(short qtde_maxima_entradas);
 
 /*
  * Função: destroiDicionario

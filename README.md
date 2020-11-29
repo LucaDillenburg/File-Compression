@@ -36,3 +36,6 @@ Portanto, n˜ao use em seus testes arquivos contendo caracteres que n˜ao perten
 O algoritmo de descompacta¸c˜ao descrito na Se¸c˜ao 3 n˜ao funciona quando o arquivo de entrada cont´em
 uma sequˆencia de 3 caracteres ou strings repetidos (como “rrr” ou “aiaiai”). Portanto, n˜ao use em
 seus testes sequˆencias de caracteres com essas caracter´ısticas.
+
+## Video Explanation
+https://www.youtube.com/watch?v=j2HSd3HCpDs
