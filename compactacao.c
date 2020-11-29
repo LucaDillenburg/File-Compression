@@ -13,15 +13,6 @@
   AINDA ASSIM, PODERÃO SER PUNIDOS POR DESONESTIDADE ACADÊMICA.
 
   Nome(s) : Luca Assumpção Dillenburg
-
-  Referências: Com exceção das rotinas fornecidas no enunciado e em
-  sala de aula, caso você(s) tenha(m) utilizado alguma referência,
-  liste(m) abaixo para que o programa não seja considerado plágio ou
-  irregular.
-
-  Exemplo:
-  - O algoritmo Quicksort foi baseado em
-  http://www.ime.usp.br/~pf/algoritmos/aulas/quick.html
 */
 
 #include "compactacao.h"
@@ -34,26 +25,51 @@
 #define QTDE_MAXIMA_ENTRADAS 32767
 #define MAX_LENGTH_ENTRADA 100
 
-/* SHORT TO CHARS */
-char lowByteOfShort(short s) { return s & 0xff; }
-char highByteOfShort(short s) { return s >> 8; }
-/* CHARS TO SHORT */
-short shortFromBytes(char low, char high) {
-  short s = (unsigned char)high;
+/*
+ * Função: byteBaixoDoCodigo
+ * ---------------------------------
+ * A funcao retorna o byte baixo do short.
+ */
+char byteBaixoDoCodigo(short s) { return s & 0xff; }
+
+/*
+ * Função: highByteOfShort
+ * ---------------------------------
+ * A funcao retorna o byte alto do short.
+ */
+char byteAltoDoCodigo(short s) { return s >> 8; }
+
+/*
+ * Função: concatBytes
+ * ---------------------------------
+ * A funcao retorna um byte de tal forma que o byte baixo do mesmo
+ * eh o primeiro parametro e o alto, a segunda.
+ */
+short concatBytes(char baixo, char alto) {
+  short s = (unsigned char)alto;
   s = s << 8;
   s = s & 0xff00;
-  s = s | (unsigned char)low;
+  s = s | (unsigned char)baixo;
   return s;
 }
 
+/*
+ * Função: escreveCodigoAssociado
+ * ---------------------------------
+ * Escreve codigo da entrada.
+ * A função tenta obter esse codigo com o dicionario e entrada.
+ * Caso o codigo seja valido, ela escreve primeiro o byte baixo e
+ * depois o alto do codigo. Caso contrario, ela escreve os caracteres
+ * da entrada com um '\0' entre cada um deles.
+ */
 void escreveCodigoAssociado(tDicionario *dicionario, FILE *arq_binario_saida,
                             char *entrada, char prim) {
-  short code = obtemCodigo(dicionario, entrada);
-  if (code >= 0) {
-    char low = lowByteOfShort(code + PRIMEIRO_CODIGO_DEPOIS_ASCII);
-    char high = highByteOfShort(code + PRIMEIRO_CODIGO_DEPOIS_ASCII);
-    fputc(low, arq_binario_saida);
-    fputc(high, arq_binario_saida);
+  short codigo = obtemCodigo(dicionario, entrada);
+  if (codigo >= 0) {
+    char baixo = byteBaixoDoCodigo(codigo + PRIMEIRO_CODIGO_DEPOIS_ASCII);
+    char alto = byteAltoDoCodigo(codigo + PRIMEIRO_CODIGO_DEPOIS_ASCII);
+    fputc(baixo, arq_binario_saida);
+    fputc(alto, arq_binario_saida);
   } else {
     int i;
     for (i = 0;; i++)
@@ -70,62 +86,58 @@ tDicionario *compactaComLZW(FILE *arq_texto_entrada, FILE *arq_binario_saida) {
   char *entrada = (char *)malloc(sizeof(char) * MAX_LENGTH_ENTRADA);
   entrada[0] = '\0';
 
-  int prim = 1;
+  int primeiro_vez = 1;
 
   while (1) {
-    char c = fgetc(arq_texto_entrada);
-    if (c == EOF)
+    char char_atual = fgetc(arq_texto_entrada);
+    if (char_atual == EOF)
       break;
 
-    char *entradaComC = (char *)malloc(sizeof(char) * MAX_LENGTH_ENTRADA);
-    strcpy(entradaComC, entrada);
-    strncat(entradaComC, &c, 1);
+    char *entrada_com_ultimo_char_lido =
+        (char *)malloc(sizeof(char) * MAX_LENGTH_ENTRADA);
+    strcpy(entrada_com_ultimo_char_lido, entrada);
+    strncat(entrada_com_ultimo_char_lido, &char_atual, 1);
 
-    if (strlen(entrada) > 0 && obtemCodigo(dicionario, entradaComC) < 0) {
-      escreveCodigoAssociado(dicionario, arq_binario_saida, entrada, prim);
-      prim = 0;
-      adicionaEntrada(dicionario, entradaComC);
+    if (strlen(entrada) > 0 &&
+        obtemCodigo(dicionario, entrada_com_ultimo_char_lido) < 0) {
+      escreveCodigoAssociado(dicionario, arq_binario_saida, entrada,
+                             primeiro_vez);
+      primeiro_vez = 0;
+      adicionaEntrada(dicionario, entrada_com_ultimo_char_lido);
 
-      entrada[0] = c;
+      entrada[0] = char_atual;
       entrada[1] = '\0';
     } else {
-      strncat(entrada, &c, 1);
-      free(entradaComC);
+      strncat(entrada, &char_atual, 1);
+      free(entrada_com_ultimo_char_lido);
     }
   }
 
-  escreveCodigoAssociado(dicionario, arq_binario_saida, entrada, prim);
+  escreveCodigoAssociado(dicionario, arq_binario_saida, entrada, primeiro_vez);
   return dicionario;
 }
 
 tDicionario *descompactaComLZW(FILE *arq_binario_entrada,
                                FILE *arq_texto_saida) {
   tDicionario *dicionario = criaDicionario(QTDE_MAXIMA_ENTRADAS);
-
-  char low, high;
-  low = fgetc(arq_binario_entrada);
-  high = fgetc(arq_binario_entrada);
+  int primeira_vez = 1;
 
   char *entrada = (char *)malloc(sizeof(char) * MAX_LENGTH_ENTRADA);
-  entrada[0] = low;
-  entrada[1] = '\0';
-
-  fputs(entrada, arq_texto_saida);
-
+  entrada[0] = '\0';
   while (1) {
-    low = fgetc(arq_binario_entrada);
-    high = fgetc(arq_binario_entrada);
-    if (low == EOF && high == EOF)
+    char byte_baixo = fgetc(arq_binario_entrada);
+    char byte_alto = fgetc(arq_binario_entrada);
+    if (byte_baixo == EOF && byte_alto == EOF)
       break;
 
     char *entrada_anterior = entrada;
     entrada = (char *)malloc(sizeof(char) * MAX_LENGTH_ENTRADA);
 
-    if (low > 0 && high == 0) {
-      entrada[0] = low;
+    if (byte_baixo > 0 && byte_alto == 0) {
+      entrada[0] = byte_baixo;
       entrada[1] = '\0';
     } else {
-      short s = shortFromBytes(low, high);
+      short s = concatBytes(byte_baixo, byte_alto);
       short cod_dicionario = s - PRIMEIRO_CODIGO_DEPOIS_ASCII;
       char *str_dicionario = obtemEntrada(dicionario, cod_dicionario);
       strcpy(entrada, str_dicionario);
@@ -133,11 +145,14 @@ tDicionario *descompactaComLZW(FILE *arq_binario_entrada,
 
     fputs(entrada, arq_texto_saida);
 
-    strncat(entrada_anterior, entrada, 1);
-    adicionaEntrada(dicionario, entrada_anterior);
-    // free(entrada_anterior);
+    if (!primeira_vez) {
+      strncat(entrada_anterior, entrada, 1);
+      adicionaEntrada(dicionario, entrada_anterior);
+    } else {
+      primeira_vez = 0;
+      free(entrada_anterior);
+    }
   }
-  // free(entrada);
 
   return dicionario;
 }
