@@ -1,0 +1,12 @@
+com/dillenburg/huffmancompression/compressor/data/Code.class
+com/dillenburg/huffmancompression/compressor/BaseCompression.class
+com/dillenburg/huffmancompression/auxiliar/FileUtils.class
+com/dillenburg/huffmancompression/compressor/data/FreqSimb.class
+com/dillenburg/huffmancompression/dataStructures/binaryTree/TreeNode.class
+com/dillenburg/huffmancompression/compressor/FileDecompressor.class
+com/dillenburg/huffmancompression/compressor/dataStructures/listaDesordenada/Node.class
+com/dillenburg/huffmancompression/compressor/CompressionUtils.class
+com/dillenburg/huffmancompression/compressor/dataStructures/listaDesordenada/UnorderedList.class
+com/dillenburg/huffmancompression/auxiliar/MyRandomAccessFile.class
+com/dillenburg/huffmancompression/compressor/FileCompressor.class
+com/dillenburg/huffmancompression/auxiliar/GenericClone.class

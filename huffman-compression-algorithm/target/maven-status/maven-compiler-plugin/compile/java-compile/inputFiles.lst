@@ -1,0 +1,12 @@
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/auxiliar/MyRandomAccessFile.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/dataStructures/listaDesordenada/Node.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/compressor/FileCompressor.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/dataStructures/binaryTree/TreeNode.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/auxiliar/GenericClone.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/compressor/data/FreqSimb.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/compressor/data/Code.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/dataStructures/listaDesordenada/UnorderedList.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/compressor/BaseCompression.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/compressor/CompressionUtils.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/compressor/FileDecompressor.java
+/home/dillenburg/projects/file-compressor-and-decompressor/huffman-compression-algorithm/src/main/java/com/dillenburg/huffmancompression/auxiliar/FileUtils.java
