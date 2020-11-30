@@ -1,15 +1,35 @@
-CCFLAGS = -Wall
+MAIN ?= main
+EXEC ?= lzw
+CFLAGS = -Wall -O2 -g
 CC = gcc
 
-testa_compactacao : testa_compactacao.c compactacao.h compactacao.o dicionario.o
-	$(CC) $(CCFLAGS) -o testa_compactacao testa_compactacao.c compactacao.o dicionario.o
+BUILD_DIR ?= ./build
+SRC_DIRS ?= ./src
 
-compactacao.o : compactacao.c compactacao.h dicionario.h
-	$(CC) $(CCFLAGS) -c compactacao.c 
+SRCS := $(shell find $(SRC_DIRS) -name *.c)
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 
-dicionario.o : dicionario.c dicionario.h
-	$(CC) $(CCFLAGS) -c dicionario.c
+INC_DIRS := $(shell find $(SRC_DIRS) -type d)
+INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-.PHONY : clean
-clean :
-	-rm -f *.o testa_compactacao
+$(BUILD_DIR)/$(MAIN): $(OBJS)
+	$(CC) $(OBJS) -o $(EXEC) $(LDFLAGS)
+
+$(BUILD_DIR)/%.c.o: %.c
+	$(MKDIR_P) $(dir $@)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+debug:
+	make
+	-gdb ./$(BUILD_DIR)/$(MAIN)
+	make clean
+
+run:
+	make
+	-./$(BUILD_DIR)/$(MAIN)
+	make clean
+
+clean:
+	-rm -r $(BUILD_DIR)
+
+MKDIR_P ?= mkdir -p
