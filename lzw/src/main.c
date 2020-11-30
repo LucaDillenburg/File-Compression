@@ -3,15 +3,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#define TAM_NOME_ARQ 25
-#define NOME_ARQ_COMPACTADO "compactado.bin"
-#define NOME_ARQ_DESCOMPACTADO "descompactado.txt"
-
 #define COMPRESS_MODE_STR "compress"
 #define DECOMPRESS_MODE_STR "decompress"
 
-#define COMPRESS_FILE_NAME "compressed"
-#define DECOMPRESS_FILE_NAME "decompressed"
+#define COMPRESS_FILE_NAME "compressed_lwz"
+#define DECOMPRESS_FILE_NAME "decompressed_lwz"
 
 #define MODE_INDEX 1
 #define INPUT_FILE_INDEX 1
@@ -32,7 +28,7 @@ int main(int argc, char **argv) {
   char *input_file_name = argv[2];
 
   if (strcmp(mode, COMPRESS_MODE_STR) != 0 &&
-      strcmp(mode, DECOMPRESS_MODE_STR) == 0) {
+      strcmp(mode, DECOMPRESS_MODE_STR) != 0) {
     printf("Unknown mode! The options are: \"compress\" and \"decompress\".\n");
     return 2;
   }
