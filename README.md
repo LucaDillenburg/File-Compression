@@ -11,11 +11,9 @@ This is algorithm is based uppon having the most common bytes in a file being re
 For more information you can access: [https://www.geeksforgeeks.org/huffman-coding-greedy-algo-3/](https://www.geeksforgeeks.org/huffman-coding-greedy-algo-3/).
 
 #### Run
-# TODO
 ```sh
-#compile
-#compress
-#decompress
+mvn clean package #compile
+java -jar target/huffman-compression-algorithm-1.0-SNAPSHOT-jar-with-dependencies.jar #run
 ```
 
 #### Example
@@ -28,13 +26,12 @@ You can find some examples in the ```examples``` directory:
 	-rw-r--r-- your_user_name your_group 175.1KB Jun 25 22:44 original_file.txt
 	```
 	This represents a **46.6% percent compression rate**.
-# TODO:
 - Book (```examples/book```)
 
 	The ```ls -l``` commands shows as follows:
 	```
-	-rw-r--r-- your_user_name your_group XKB Jun 25 22:44 compressed.huff
-	-rw-r--r-- your_user_name your_group XKB Jun 25 22:44 original_file.txt
+	-rw-r--r-- your_user_name your_group 25.6KB Jun 25 22:44 compressed.huff
+	-rw-r--r-- your_user_name your_group 46.3KB Jun 25 22:44 original_file.txt
 	```
 	This represents a **X% percent compression rate**.
 
