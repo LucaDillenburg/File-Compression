@@ -1,5 +1,3 @@
 #/usr/bin/sh
 mvn clean package #compile
-echo "#! /usr/bin/env java -jar" > huffman
-cat target/huffman-compression-algorithm-1.0-SNAPSHOT-jar-with-dependencies.jar >> huffman
-chmod +x huffman
+cat stub.sh target/huffman-compression-algorithm-1.0-SNAPSHOT-jar-with-dependencies.jar > huffman && chmod +x huffman 
