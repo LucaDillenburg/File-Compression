@@ -64,7 +64,8 @@ int main(int argc, char **argv) {
     char did_increase = printSizeRate(original_file_size, compressed_file_size);
     printf(".");
     if (did_increase)
-      printf(" It's better if you use the original file!");
+      printf(" The compression resulted in a larger file! You should use the "
+             "original file!");
   } else {
     decompressByLZW(input_file, output_file);
     int compressed_file_size = getFileSize(input_file);

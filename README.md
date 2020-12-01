@@ -1,4 +1,4 @@
-# File Compressors and Decompressors
+# File Compression
 Set of file compression algorithms.
 
 ## Algorithms
@@ -12,8 +12,10 @@ For more information you can access: [https://www.geeksforgeeks.org/huffman-codi
 
 #### Run
 ```sh
-mvn clean package #compile
-java -jar target/huffman-compression-algorithm-1.0-SNAPSHOT-jar-with-dependencies.jar #run
+cd huffman
+./compile #compile
+./huffman compress file #run compress
+./huffman decompress compressedFile #run decompress
 ```
 
 #### Example
@@ -42,9 +44,10 @@ For more info you can access: [https://www.geeksforgeeks.org/lzw-lempel-ziv-welc
 
 #### Run
 ```sh
+cd lzw
 make
-./lzw compress file #compress
-./lzw decompress compressedFile #decompress
+./lzw compress file #run compress
+./lzw decompress compressedFile #run decompress
 ```
 
 #### Example
