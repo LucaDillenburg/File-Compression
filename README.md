@@ -35,7 +35,7 @@ You can find some examples in the ```examples``` directory:
 	-rw-r--r-- your_user_name your_group 25.6KB Jun 25 22:44 compressed.huff
 	-rw-r--r-- your_user_name your_group 46.3KB Jun 25 22:44 original_file.txt
 	```
-	This represents a **X% percent compression rate**.
+	This represents a **44.7% percent compression rate**.
 
 ## Lempel-Ziv-Welch-Compression-Algorithm
 This algorithm is based a group of bits that can store more than one or more bytes. An entry table is generated with the bytes that have already been read so when the same sequence is read again it will be substituted to the associated code in the entry table. A really important thing is that the entry table doesn't have to be written in the compressed file since it can be generated again by the decompressor.

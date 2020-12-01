@@ -21,12 +21,12 @@ $(BUILD_DIR)/%.c.o: %.c
 
 debug:
 	make
-	-gdb ./$(BUILD_DIR)/$(MAIN)
+	-gdb ./$(EXEC)
 	make clean
 
 run:
 	make
-	-./$(BUILD_DIR)/$(MAIN)
+	-./$(EXEC)
 	make clean
 
 clean:

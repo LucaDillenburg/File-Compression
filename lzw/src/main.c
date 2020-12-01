@@ -70,11 +70,8 @@ int main(int argc, char **argv) {
     decompressByLZW(input_file, output_file);
     int compressed_file_size = getFileSize(input_file);
     int original_file_size = getFileSize(output_file);
-    printf("The file %s was decompressed to %s with a ", input_file_name,
+    printf("The file %s was decompressed to %s.", input_file_name,
            output_file_name);
-
-    printSizeRate(original_file_size, compressed_file_size);
-    printf(".");
   }
 
   return 0;
@@ -84,42 +81,11 @@ char printSizeRate(int input_file_size, int output_file_size) {
   double rate = (double)output_file_size / input_file_size;
   if (rate < 1) {
     double decreased_perc = 1 - rate;
-    printf("%.1f decrease in size", decreased_perc * 100);
+    printf("%.1f%% decrease in size", decreased_perc * 100);
     return 0;
   } else {
     double increased_perc = rate - 1;
-    printf("%.1f increase in size", increased_perc * 100);
+    printf("%.1f%% increase in size", increased_perc * 100);
     return 1;
   }
-}
-
-bool arquivosSaoIguais(FILE *arq1, FILE *arq2) {
-  int c1, c2;
-
-  /* Vai para o início dos arquivos */
-  fseek(arq1, 0, SEEK_SET);
-  fseek(arq2, 0, SEEK_SET);
-
-  int is_equal = 1;
-
-  /* Compara os arquivos caracter a caracter */
-  int i = 0;
-  do {
-    c1 = fgetc(arq1);
-    c2 = fgetc(arq2);
-
-    printf("%d: decimal: %d | usinged char: %d\n", i, c1, (unsigned char)c1);
-    printf("%d: decimal: %d | usinged char: %d\n", i, c2, (unsigned char)c2);
-    // printf("%d: decimal: %d | char: %d | usinged char: %d", i, c1, (char)c1,
-    //        (unsigned char)c1);
-    // printf("%d: decimal: %d | char: %d | usinged char: %d", i, c2, (char)c2,
-    //        (unsigned char)c2);
-    printf("\n");
-
-    if (c1 != c2)
-      is_equal = 0;
-    i++;
-  } while (c1 != EOF && c2 != EOF);
-
-  return is_equal && (c1 == EOF && c2 == EOF);
 }

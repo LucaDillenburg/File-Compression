@@ -16,11 +16,11 @@ fun printSizeChange(inputSize: Long, outputSize: Long): Boolean {
     val rate = outputSize.toDouble() / inputSize.toDouble()
     if (rate < 1) {
         val decreased_perc = 1 - rate
-        print("${"%.2f".format(decreased_perc * 100f)} decrease in size")
+        print("${"%.1f".format(decreased_perc * 100f)}% decrease in size")
         return false
     } else {
         val increased_perc = rate - 1
-        print("${"%.2f".format(increased_perc * 100f)} increase in size")
+        print("${"%.1f".format(increased_perc * 100f)}% increase in size")
         return true
     }
 }
@@ -45,17 +45,19 @@ fun main(args: Array<String>) {
             val fileCompressor = FileCompressor(File(inputPath))
             fileCompressor.compress()
             outputPath = fileCompressor.writeToFile()
+
+            print("The file $inputPath was successfully compressed to $outputPath with a ")
+            val increased = printSizeChange(getFileSize(inputPath), getFileSize(outputPath))
+            print(".")
+            if (increased)
+                print(" The compression resulted in a larger file! You should use the original file!")
         } else {
             val fileDecompressor = FileDecompressor(File(inputPath))
             fileDecompressor.decompress()
             outputPath = fileDecompressor.writeToFile()
-        }
 
-        print("The file $inputPath was successfully ${mode}ed to $outputPath with a ")
-        val increased = printSizeChange(getFileSize(inputPath), getFileSize(outputPath))
-        print(".")
-        if (increased && mode == "compress")
-            print(" The compression resulted in a larger file! You should use the original file!")
+            print("The file $inputPath was successfully decompressed to $outputPath.")
+        }
     } catch (e: Exception) {
         print("Error: $e")
         exitProcess(3)
