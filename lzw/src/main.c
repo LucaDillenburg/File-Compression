@@ -1,4 +1,5 @@
 #include "compression.h"
+#include "utils.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -13,9 +14,7 @@
 #define INPUT_FILE_INDEX 1
 #define OUTPUT_FILE_INDEX 2
 
-int getFileSize(FILE *arq);
 char printSizeRate(int input_file_size, int output_file_size);
-bool arquivosSaoIguais(FILE *arq1, FILE *arq2);
 
 int main(int argc, char **argv) {
   if (argc < 3) {
@@ -33,15 +32,11 @@ int main(int argc, char **argv) {
     return 2;
   }
 
-  char *output_file_name = NULL;
-  if (argc >= 4)
-    output_file_name = argv[3];
-  else {
-    if (strcmp(mode, COMPRESS_MODE_STR) == 0)
-      output_file_name = COMPRESS_FILE_NAME;
-    else
-      output_file_name = DECOMPRESS_FILE_NAME;
-  }
+  char *output_file_name;
+  if (strcmp(mode, COMPRESS_MODE_STR) == 0)
+    output_file_name = COMPRESS_FILE_NAME;
+  else
+    output_file_name = DECOMPRESS_FILE_NAME;
 
   FILE *input_file = fopen(input_file_name, "r");
   if (input_file == NULL) {
@@ -54,8 +49,9 @@ int main(int argc, char **argv) {
     return 4;
   }
 
+  vector *dictionary;
   if (strcmp(mode, COMPRESS_MODE_STR) == 0) {
-    compressByLZW(input_file, output_file);
+    dictionary = compressByLZW(input_file, output_file);
     int original_file_size = getFileSize(input_file);
     int compressed_file_size = getFileSize(output_file);
     printf("The file %s was compressed to %s with a ", input_file_name,
@@ -67,12 +63,14 @@ int main(int argc, char **argv) {
       printf(" The compression resulted in a larger file! You should use the "
              "original file!");
   } else {
-    decompressByLZW(input_file, output_file);
-    int compressed_file_size = getFileSize(input_file);
-    int original_file_size = getFileSize(output_file);
+    dictionary = decompressByLZW(input_file, output_file);
     printf("The file %s was decompressed to %s.", input_file_name,
            output_file_name);
   }
+
+  fclose(input_file);
+  fclose(output_file);
+  freeVector(dictionary);
 
   return 0;
 }

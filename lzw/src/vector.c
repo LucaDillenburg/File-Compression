@@ -33,7 +33,7 @@ short pushItem(vector *dictionary, char *item) {
 }
 
 char *getItem(vector *dictionary, short index) {
-  if (index >= dictionary->last || index < 0)
+  if (index > dictionary->last || index < 0)
     return NULL;
   return dictionary->array[index];
 }
