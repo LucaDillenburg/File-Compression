@@ -20,14 +20,6 @@ cd huffman
 
 #### Example
 You can find some examples in the ```examples``` directory:
-- Lorem Ipsum (```examples/lorem-ipsum```)
-
-	The ```ls -l``` commands shows as follows:
-	```
-	-rw-r--r-- your_user_name your_group  93.8KB Jun 25 22:44 compressed.huff
-	-rw-r--r-- your_user_name your_group 175.1KB Jun 25 22:44 original_file.txt
-	```
-	This represents a **46.6% percent compression rate**.
 - Book (```examples/book```)
 
 	The ```ls -l``` commands shows as follows:
@@ -52,14 +44,6 @@ make
 
 #### Example
 You can find some examples in the ```examples``` directory:
-- Lorem Ipsum (```examples/lorem-ipsum```)
-
-	The ```ls -l``` commands shows as follows:
-	```
-	-rw-r--r-- your_user_name your_group  56.7KB Jun 25 22:44 compressed_lzw
-	-rw-r--r-- your_user_name your_group 175.1KB Jun 25 22:44 original_file.txt
-	```
-	This represents a **67.6% percent compression rate**.
 - Book (```examples/book```)
 
 	The ```ls -l``` commands shows as follows:
@@ -69,10 +53,10 @@ You can find some examples in the ```examples``` directory:
 	```
 	This represents a **46.7% percent compression rate**.
 
-#### Limitations
+#### Implementation Limitations
 - Size
   
-  Since in this implementation the number of bits per code is fixed in 16 bits, the maximum number of elements in the entry table is 32767. Therefore, the algorithm may not work with files larger than 50kB. However, the LZW algorithm can be implemented to support a larger range of files (from the smallest to the largest ones).
+  Since in this implementation the number of bits per code is fixed in 16 bits, the maximum number of elements in the entry table is 32767. Therefore, the algorithm may not work with files that are larger than 50kB (this will depend on the number of elements in the dictionary). However, the LZW algorithm can be implemented to support a larger range of files (from the smallest to the largest ones).
 
 - Extension
   
